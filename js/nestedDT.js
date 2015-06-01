@@ -1,4 +1,3 @@
-
 mainTableJson=
 {
 	"courses": [
@@ -8,7 +7,22 @@ mainTableJson=
 			"CreditHours":"3",
 			"Faculty":"Science",
 			"Department":"Computer Science",
-			"Prerequisites":"None"
+			"Prerequisites":"None",
+			"Sections":[
+				{
+					"SecID":"A01",
+					"Instructor":"Tom",
+					"Days" : "MWF",
+					"Location": "Armes 200"
+				},
+				{
+					"SecID":"A02",
+					"Instructor":"Paul",
+					"Days" : "TTH",
+					"Location": "E2 110"
+				}
+			]
+			
 		},
 		
 		{
@@ -17,7 +31,17 @@ mainTableJson=
 			"CreditHours":"3",
 			"Faculty":"Science",
 			"Department":"Computer Science",
-			"Prerequisites":"None"
+			"Prerequisites":"None",
+			"Sections":[
+				{
+					"SecID":"A01",
+					"Instructor":"Bob",
+					"Days" : "TTH",
+					"Location": "E2 400"
+				}
+			]
+			
+			
 		},
 		{
 			"CourseID":"COMP2160",
@@ -25,7 +49,28 @@ mainTableJson=
 			"CreditHours":"3",
 			"Faculty":"Science",
 			"Department":"Computer Science",
-			"Prerequisites":"COMP1010"
+			"Prerequisites":"COMP1010",
+			"Sections":[
+				{
+					"SecID":"A01",
+					"Instructor":"John",
+					"Days" : "MWF",
+					"Location": "E2 100"
+				},
+				{
+					"SecID":"A02",
+					"Instructor":"Smith",
+					"Days" : "MWF",
+					"Location": "Tier 340"
+				},
+				{
+					"SecID":"A03",
+					"Instructor":"Allan",
+					"Days" : "TTH",
+					"Location": "E2 303"
+				}
+			]
+			
 		}
 		
 	]
@@ -34,26 +79,29 @@ mainTableJson=
 
 
 function fillSecTable(courseID, rowIndex){
-	
 	st=$('table#'+courseID).DataTable( {
-		/*"data": mainTableJson["courses"][rowIndex]["Sections"],*/
-		"data":mainTableJson["courses"],
+		"data": mainTableJson["courses"][rowIndex]["Sections"],
 		"columns": [
 			{
-				"data": "CourseID",
-				"title": "Course ID"
+				"data": "SecID",
+				"title": "Section"
 			},
 			{
-				"data": "CourseName",
-				"title": "Course Name"
+				"data": "Instructor",
+				"title": "Instructor"
 			},
 			{
-				"data": "CreditHours",
-				"title": "Credit Hours"
+				"data":"Days",
+				"title":"Days"
+			},
+			{
+				"data":"Location",
+				"title":"Location"
 			}
+		
 			
 			
-			
+	
 		],
 		"bPaginate":false,
 		"bInfo":false,
@@ -91,11 +139,11 @@ function nestedDT()
 			},
 			{
 				"data": "Faculty",
-				"title": "Credit Faculty"
+				"title": "Faculty"
 			},
 			{
 				"data": "Department",
-				"title": "Credit Department"
+				"title": "Department"
 			},
 			{
 				"data": "Prerequisites",
@@ -115,7 +163,7 @@ function nestedDT()
 			tr.removeClass('shown');
 		}
 		else {
-			/*row.child("").show();*/
+			
 			row.child(createSecTable(row.data().CourseID)).show();
 			fillSecTable(row.data().CourseID, row.index());
 			tr.addClass('shown');
