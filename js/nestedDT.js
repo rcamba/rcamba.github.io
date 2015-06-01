@@ -1,37 +1,75 @@
 
-function nestedDT()
+mainTableJson=
 {
-	mainTableJson=
-	{
-		"main": [
+	"courses": [
+		{
+			"CourseID":"COMP1010",
+			"CourseName":"Intro to Computer Science",
+			"CreditHours":"3",
+			"Faculty":"Science",
+			"Department":"Computer Science",
+			"Prerequisites":"None"
+		},
+		
+		{
+			"CourseID":"COMP1260",
+			"CourseName":"Computer Usage",
+			"CreditHours":"3",
+			"Faculty":"Science",
+			"Department":"Computer Science",
+			"Prerequisites":"None"
+		},
+		{
+			"CourseID":"COMP2160",
+			"CourseName":"Data Structures",
+			"CreditHours":"3",
+			"Faculty":"Science",
+			"Department":"Computer Science",
+			"Prerequisites":"COMP1010"
+		}
+		
+	]
+	
+};
+
+
+function fillSecTable(courseID, rowIndex){
+	
+	st=$('table#'+courseID).DataTable( {
+		/*"data": mainTableJson["courses"][rowIndex]["Sections"],*/
+		"data":mainTableJson["courses"],
+		"columns": [
 			{
-			
-				"Column1":"Value1",
-				"Column2":"Value2",
-				"Column3":"Value3"
+				"data": "CourseID",
+				"title": "Course ID"
 			},
-			
 			{
-			
-				"Column1":"Value4",
-				"Column2":"Value5",
-				"Column3":"Value6"
+				"data": "CourseName",
+				"title": "Course Name"
 			},
 			{
-			
-				"Column1":"Value7",
-				"Column2":"Value8",
-				"Column3":"Value9"
+				"data": "CreditHours",
+				"title": "Credit Hours"
 			}
 			
-		
-		]
-		
-		
-	};
+			
+			
+		],
+		"bPaginate":false,
+		"bInfo":false,
+		"bFilter":false,
+		"processing": true
+	} );
+	
+}
+
+
+function nestedDT()
+{
+	
 	
 	mainDT=$('#mainTable').DataTable({
-		"data": mainTableJson["main"],
+		"data": mainTableJson["courses"],
 		"columns":[
 			{
 				"className": "expand",
@@ -40,21 +78,29 @@ function nestedDT()
 				"defaultContent": ""
 			},
 			{
-			
-				"data": "Column1",
-				"title": "C1"
+				"data": "CourseID",
+				"title": "Course ID"
 			},
 			{
-				"data": "Column2",
-				"title": "C2"
-			
+				"data": "CourseName",
+				"title": "Course Name"
 			},
 			{
-				"data": "Column3",
-				"title": "C3"
-			
+				"data": "CreditHours",
+				"title": "Credit Hours"
+			},
+			{
+				"data": "Faculty",
+				"title": "Credit Faculty"
+			},
+			{
+				"data": "Department",
+				"title": "Credit Department"
+			},
+			{
+				"data": "Prerequisites",
+				"title": "Prerequisites(s)"
 			}
-			
 			
 			
 		]
@@ -69,25 +115,27 @@ function nestedDT()
 			tr.removeClass('shown');
 		}
 		else {
-			row.child("").show();
+			/*row.child("").show();*/
+			row.child(createSecTable(row.data().CourseID)).show();
+			fillSecTable(row.data().CourseID, row.index());
 			tr.addClass('shown');
 			
 		}
 	});
 }
 
-/*
-function createSecTable (data) {
+
+function createSecTable (courseID) {
 	var retVal="";
 	
-	retVal=retVal+'<table id="'+ data.CourseID +'" width="90%" class="cell-border hover" style="margin-left:50px">';
+	retVal=retVal+'<table id="'+ courseID +'" width="90%" class="cell-border hover" style="margin-left:50px">';
 	
 	retVal=retVal+'</table>';
 	
 	return retVal;
 }
 
-
+/*
 function createAddCoursesTable(global_enrollCourseListJson)
 {
 	global_addCoursesTable=$('#courseTable').DataTable( {
@@ -169,73 +217,6 @@ function createAddCoursesTable(global_enrollCourseListJson)
 		}
 	});
 }
-
-function fillSecTable(courseID, rowIndex){
-	
-	
-	st=$('table#'+courseID).DataTable( {
-		"data": global_enrollCourseListJson["courses"][rowIndex]["Sections"],
-		"columns": [
-
-			{ 
-				"data": "CRN",
-				"title": "CRN"
-			},
-			{ 
-				"data": "SectionID",
-				"title": "Section"
-			},
-			{ 
-				"data": "Days",
-				"title": "Days"
-			},
-			{ 
-				"data": "SectionCap",
-				"title": "Capactiy"
-			},
-			{ 
-				"data": "AvailableSpace",
-				"title": "Vacant"
-			},
-			{ 
-				"data": "ClassTime",
-				"title": "Class Time"
-			},
-			{ 
-				"data": "Instructor",
-				"title": "Instructor"
-			},
-			{ 
-				"data": "Location",
-				"title": "Location"
-			},
-			{ 
-				"data": "CRN",
-				"title": "Switch with",
-				"orderable": false,
-				"render": function(data){
-					return createEnrolledDropDown(data);
-				}
-			},
-			{ 
-				"data": "CRN",
-				"title":"",
-				"orderable": false,
-				"render": function(data){
-					return '<button  id="addButton_' + (data)+'" onclick=handleAdd("'+data+'") > Add </button>'
-				}
-			}
-			
-			
-		],
-		"bPaginate":false,
-		"bInfo":false,
-		"bFilter":false,
-		"processing": true
-	} );
-	
-}
-
 
 function requestCourseList(){ 
 	var AJAX_RESPONSE_READY = 4;
