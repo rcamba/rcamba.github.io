@@ -21,7 +21,11 @@ mainTableJson=
 					"Days" : "TTH",
 					"Location": "E2 110"
 				}
-			]
+			],
+			//to allow main data table to search through nested datatable sections
+			"Days":["MWF","TTH"],
+			"Location":["Armes 200", "E2 110"],
+			"Instructor":["Tom","Paul"]
 			
 		},
 		
@@ -35,11 +39,15 @@ mainTableJson=
 			"Sections":[
 				{
 					"SecID":"A01",
-					"Instructor":"Bob",
+					"Instructor":"John",
 					"Days" : "TTH",
 					"Location": "E2 400"
 				}
-			]
+			],
+			//to allow main data table to search through nested datatable sections
+			"Days":["TTH"],
+			"Location":["E2 400"],
+			"Instructor":["John"]
 			
 			
 		},
@@ -69,8 +77,11 @@ mainTableJson=
 					"Days" : "TTH",
 					"Location": "E2 303"
 				}
-			]
-			
+			],
+			//to allow main data table to search through nested datatable sections
+			"Days":["MWF","TTH"],
+			"Location":["E2 100", "Tier 340", "E2 303"],
+			"Instructor":["John","Smith","Allan"]
 		}
 		
 	]
@@ -99,9 +110,6 @@ function fillSecTable(courseID, rowIndex){
 				"title":"Location"
 			}
 		
-			
-			
-	
 		],
 		"bPaginate":false,
 		"bInfo":false,
@@ -114,8 +122,7 @@ function fillSecTable(courseID, rowIndex){
 
 function nestedDT()
 {
-	
-	
+		
 	mainDT=$('#mainTable').DataTable({
 		"data": mainTableJson["courses"],
 		"columns":[
@@ -147,11 +154,25 @@ function nestedDT()
 			},
 			{
 				"data": "Prerequisites",
-				"title": "Prerequisites(s)"
+				"title": "Prerequisites(s)",
+				"bSearchable": false
+			},
+			{ 
+				"data": "Days",
+				"visible": false
+			},
+			{ 
+				"data": "Location",
+				"visible": false
+			},
+			{ 
+				"data": "Instructor",
+				"visible": false
 			}
 			
 			
-		]
+		],
+		"order": [[1, 'asc']]//ascending order on second column(CourseID)
 	});
 	
 	$('#mainTable tbody').on('click', 'tr', function () {
@@ -172,7 +193,6 @@ function nestedDT()
 	});
 }
 
-
 function createSecTable (courseID) {
 	var retVal="";
 	
@@ -182,102 +202,3 @@ function createSecTable (courseID) {
 	
 	return retVal;
 }
-
-/*
-function createAddCoursesTable(global_enrollCourseListJson)
-{
-	global_addCoursesTable=$('#courseTable').DataTable( {
-		"data": global_enrollCourseListJson["courses"],
-		"columns": [
-			{
-				"className": "expand",
-				"orderable": false,
-				"data": null,
-				"defaultContent": ""
-			},
-			{ 
-				"data": "CourseID",
-				"title": "Course ID" 
-			},
-			{ 
-				"data": "CourseName",
-				"title": "Course Name" 
-			},
-			{ 
-				"data": "CreditHours",
-				"title": "Credit Hours",
-				"bSearchable": false
-			},
-			
-			{
-				"data": "Faculty",
-				"title": "Faculty"
-			},
-			{
-				"data": "Department",
-				"title": "Department"
-			},
-			{ 
-				"data": "Description",
-				"title": "Description"
-			},
-			{ 
-				"data": "PreReqs",
-				"title": "Prerequisite(s)",
-				"bSearchable": false
-			},
-			
-			
-			//this items are displayed as false because we just want them to be searchable in the dataTable
-			{ 
-				"data": "Days",
-				"visible": false
-			},
-			{ 
-				"data": "Location",
-				"visible": false
-			},
-			{ 
-				"data": "Instructor",
-				"visible": false
-			},
-			{ 
-				"data": "ClassTime",
-				"visible": false
-			}
-			
-		],
-		"order": [[1, 'asc']]//ascending order on second column(CourseID)
-	} );
-	
-	$('#courseTable tbody').on('click', 'tr', function () {
-		var tr = $(this).closest('tr');
-		var row = global_addCoursesTable.row( tr );
-	
-		if ( row.child.isShown() ) {
-			row.child(" ").hide();
-			tr.removeClass('shown');
-		}
-		else if (row.data() != null) {
-			row.child(createSecTable(row.data())).show();
-			fillSecTable(row.data().CourseID, row.index());
-			tr.addClass('shown');
-		}
-	});
-}
-
-function requestCourseList(){ 
-	var AJAX_RESPONSE_READY = 4;
-	var ajaxRequest = new XMLHttpRequest();
-	
-	ajaxRequest.onreadystatechange = function(){
-		if(ajaxRequest.readyState == AJAX_RESPONSE_READY){
-			
-			global_enrollCourseListJson = JSON.parse(ajaxRequest.responseText);
-			createAddCoursesTable(global_enrollCourseListJson);
-		}
-	}
-	ajaxRequest.open("GET", "/api/unenrolledCourses", true);
-	ajaxRequest.send(null);
-}
-*/
