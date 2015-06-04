@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="keywords" content="rcamba, python mock toggle, mock toggle, mock enable disable">
+        <meta name="description" content="rcamba GitHub Page index">
+        <meta name="author" content="rcamba">
+        <title>rcamba.github.io</title>
+
+        <link rel="stylesheet" type="text/css" href="../css/layout.css">
+        <link rel="stylesheet" type="text/css" href="../css/toggleMock.css">
+
+        <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+
+
+    </head>
+
+    <body>
+
+
+    <pre class="prettyprint lang-py" >
+import unittest
+import urllib2
+
+from mock import patch, MagicMock
+
+
+def deadFunc(*args, **kwargs):
+    """
+    placeholder function that takes in arguments and does nothing.
+    used to disable functions that are associated with Mock/MagicMock objects
+    """
+    pass
+
+
+class UrlResponse(object):
+    """
+    object for attaching attributes
+    """
+    def __init__(self):
+        pass
+
+class TestUrlMock(unittest.TestCase):
+
+    def setUp(self):
+        print "\nStarting ", self._testMethodName
+        self.mocking=True
+        #uncomment this to disable mocking
+        #self.setUpMock=self.setUpMockDisabled
+
+
+    def setUpMockDisabled(self, func, mockResults=[]):
+        print "Mock disabled for " + str(func.__module__)+"."+ func.__name__
+        self.mocking=False
+        func.assert_called_with= deadFunc
+
+        return func
+
+
+    def setUpMock(self, func, mockResults=[]):
+        print "Mock enabled for " + str(func.__module__)+"."+ func.__name__
+
+        if len(mockResults)>0:
+            res=MagicMock(side_effect=mockResults)
+
+        else:
+            res=MagicMock()
+
+        return res
+
+    def testUrlOpen(self):
+        urlResponse=UrlResponse()
+        setattr(urlResponse, "read", lambda : "Changed output" )
+
+        urllib2.urlopen=self.setUpMock(urllib2.urlopen, [urlResponse])
+
+        response=urllib2.urlopen("https://example.com/")
+        urllib2.urlopen.assert_called_with("https://example.com/")
+        print response.read()
+
+        #if "self.setUpMock=self.setUpMockDisabled" in setUp is commented
+        #  out then response.read() returns the expected mocked response
+        #  "Changed output".
+        #else response.read() returns the HTML code from
+        #  "https://example.com/" (assuming you are connected to the internet)
+
+
+if __name__=="__main__":
+    unittest.main()
+    </pre>
+
+
+
+    </body>
+
+</html>
