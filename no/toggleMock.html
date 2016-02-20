@@ -37,55 +37,58 @@ class UrlResponse(object):
     """
     object for attaching attributes
     """
+
     def __init__(self):
         pass
+
 
 class TestUrlMock(unittest.TestCase):
 
     def setUp(self):
         print "\nStarting ", self._testMethodName
-        self.mocking=True
-        #uncomment this to disable mocking
-        #self.setUpMock=self.setUpMockDisabled
+        self.mocking = True
 
+        # uncomment this to disable mocking
+        # or have a condition that enables this
+        # when a certain arg is passed to argv
+        # self.setUpMock=self.setUpMockDisabled
 
     def setUpMockDisabled(self, func, mockResults=[]):
-        print "Mock disabled for " + str(func.__module__)+"."+ func.__name__
-        self.mocking=False
-        func.assert_called_with= deadFunc
+        print "Mock disabled for " + str(func.__module__) + "." + func.__name__
+        self.mocking = False
+        func.assert_called_with = deadFunc
 
         return func
 
-
     def setUpMock(self, func, mockResults=[]):
-        print "Mock enabled for " + str(func.__module__)+"."+ func.__name__
+        print "Mock enabled for " + str(func.__module__) + "." + func.__name__
 
-        if len(mockResults)>0:
-            res=MagicMock(side_effect=mockResults)
+        if len(mockResults) > 0:
+            res = MagicMock(side_effect=mockResults)
 
         else:
-            res=MagicMock()
+            res = MagicMock()
 
         return res
 
     def testUrlOpen(self):
-        urlResponse=UrlResponse()
-        setattr(urlResponse, "read", lambda : "Changed output" )
+        urlResponse = UrlResponse()
+        setattr(urlResponse, "read", lambda: "Changed output")
 
-        urllib2.urlopen=self.setUpMock(urllib2.urlopen, [urlResponse])
+        urllib2.urlopen = self.setUpMock(urllib2.urlopen, [urlResponse])
 
-        response=urllib2.urlopen("https://example.com/")
+        response = urllib2.urlopen("https://example.com/")
         urllib2.urlopen.assert_called_with("https://example.com/")
         print response.read()
 
-        #if "self.setUpMock=self.setUpMockDisabled" in setUp is commented
+        # if "self.setUpMock=self.setUpMockDisabled" in setUp is commented
         #  out then response.read() returns the expected mocked response
         #  "Changed output".
-        #else response.read() returns the HTML code from
+        # else response.read() returns the HTML code from
         #  "https://example.com/" (assuming you are connected to the internet)
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     unittest.main()
     </pre>
 
