@@ -166,6 +166,9 @@ function fillLabTable(courseID, secID, rowIndex){
 
 	$('table#'+courseID+secID).DataTable( {
 		"data": mainTableJson["courses"][courseIndex]["Sections"][rowIndex]["Labs"],
+		"columnDefs": [
+			{ className: "dt-center", "targets": ["_all"] }
+		],
 		"columns": [
 
 			{
@@ -190,7 +193,7 @@ function fillLabTable(courseID, secID, rowIndex){
 				"title":"",
 				"orderable": false,
 				"render": function(data){
-					return '<button  id="enrollButton_' + (courseID+secID+data)+'" onclick=handleEnroll("'+courseID+"_"+secID+"_"+data+'") > Enroll </button>'
+					return '<button	 id="enrollButton_' + (courseID+secID+data)+'" onclick=handleEnroll("'+courseID+"_"+secID+"_"+data+'") > Enroll </button>'
 				}
 			}
 
@@ -228,6 +231,9 @@ function fillSecTable(courseID, rowIndex){
 
 		st=$('table#'+courseID).DataTable( {
 			"data": mainTableJson["courses"][rowIndex]["Sections"],
+			"columnDefs": [
+				{ className: "dt-center", "targets": ["_all"] }
+			],
 			"columns": [
 				{
 					"className": "expand",
@@ -287,6 +293,9 @@ function fillSecTable(courseID, rowIndex){
 
 		st=$('table#'+courseID).DataTable( {
 			"data": mainTableJson["courses"][rowIndex]["Sections"],
+			"columnDefs": [
+				{ className: "dt-center", "targets": ["_all"] }
+			],
 			"columns": [
 				{
 					"data": "SecID",
@@ -309,7 +318,7 @@ function fillSecTable(courseID, rowIndex){
 					"title":"",
 					"orderable": false,
 					"render": function(data){
-						return '<button  id="enrollButton_' + (courseID+data)+'" onclick=handleEnroll("'+courseID+"_"+data+'") > Enroll </button>'
+						return '<button	 id="enrollButton_' + (courseID+data)+'" onclick=handleEnroll("'+courseID+"_"+data+'") > Enroll </button>'
 					}
 				}
 
@@ -331,6 +340,9 @@ function nestedDT()
 
 	mainDT=$('#mainTable').DataTable({
 		"data": mainTableJson["courses"],
+		"columnDefs": [
+			{ className: "dt-center", "targets": ["_all"] }
+		],
 		"columns":[
 			{
 				"className": "expand",
@@ -416,7 +428,7 @@ function createSecTable (courseID) {
 function createLabTable (courseSecID) {
 	var retVal="";
 
-	retVal=retVal+'<table id="'+ courseSecID +'" width="90%" class="cell-border" style="margin-left:50px">';
+	retVal=retVal+'<table id="'+ courseSecID +'" width="90%" class="cell-border" style="margin-left:125px">';
 
 	retVal=retVal+'</table>';
 
